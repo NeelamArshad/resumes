@@ -1,0 +1,52 @@
+---
+title: "Resumes"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+library(easystats)
+
+x <- read_csv("https://raw.githubusercontent.com/PPBDS/bootcamp/refs/heads/master/_internal/data/resume.csv",
+        show_col_types = FALSE)
+```
+
+```{r}
+logistic_reg() |>
+  fit(as.factor(call) ~ gender + city + ethnicity + special, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+## Data Generating Mechanism
+
+$$
+\log\left( \frac{P(\text{call} = \text{"yes"})}{1 - P(\text{call} = \text{"yes"})} \right)
+= -2.75 - 0.126 \cdot \text{gendermale}
+- 0.463 \cdot \text{citychicago}
++ 0.447 \cdot \text{ethnicitycauc}
++ 0.817 \cdot \text{specialyes}
+$$
+ 
+
+The corresponding probability of receiving a callback is:
+
+$$
+P(\text{call} = \text{"yes"}) = \frac{1}{1 + \exp\left(-\eta\right)}
+$$
+
+with:
+
+$$
+\eta = -2.75 - 0.126 \cdot \text{gendermale}
+- 0.463 \cdot \text{citychicago}
++ 0.447 \cdot \text{ethnicitycauc}
++ 0.817 \cdot \text{specialyes}
+$$
